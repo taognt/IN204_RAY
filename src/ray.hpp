@@ -1,5 +1,5 @@
 #ifndef RAY_HPP
-#define RY_HPP
+#define RAY_HPP
 
 #include "vector.hpp"
 
@@ -10,7 +10,7 @@ class ray{
 
     public:
     ray(){}
-    explicit ray(Point a, vec b):origine(a) {}     //?? Ambigue, Point et Dir sont tout deux des vec
+    //explicit ray(Point a, vec b):origine(a), dir(b) {}     //?? Ambigue, Point et Dir sont tout deux des vec
     ray(Point& a, vec& b): origine(a), dir(b){}
 
     Point get_origine(){ return origine;}
