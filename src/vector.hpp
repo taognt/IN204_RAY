@@ -16,9 +16,9 @@ class vec{
     vec():x(0),y(0),z(0){}
     vec(double a, double b, double c):x(a), y(b), z(c){}
     
-    double getx(){return x;};
-    double gety(){return y;};
-    double getz(){return z;};
+    double getx() const {return x;};
+    double gety() const {return y;};
+    double getz() const {return z;};
 
 
     // operators
@@ -106,12 +106,12 @@ inline vec operator-( vec& u,  Point &v){
 
 //----------------------------------------------------------
 
-inline vec operator+(vec u, vec v){
+inline vec operator+(const vec &u, const vec &v){
     return vec(u.getx()+v.getx(), u.gety()+v.gety(),u.getz()+v.getz());
 }
 
 
-inline vec operator-( vec u,  vec v){
+inline vec operator-(const vec &u, const vec &v){
     return vec(u.getx()-v.getx(), u.gety()-v.gety(),u.getz()-v.getz());
 }
 
@@ -127,12 +127,12 @@ inline vec operator-( vec u,  vec v){
     return t*v;
 } */
 
-inline vec operator/(vec u, double t){
+inline vec operator/(const vec &u, double t){
     return (1/t)*u;
 }
 
 
-inline double dot(vec u, vec v){
+inline double dot(const vec &u, const vec &v){
     return u.getx()*v.getx()+u.gety()*v.gety()+u.getz()*v.getz();
 }
 
@@ -147,6 +147,8 @@ inline vec unit_vect(vec v){
 }
 
 
-using Point = vec;
+typedef vec Point;
 using color = vec; //RGB color
+
+
 #endif 

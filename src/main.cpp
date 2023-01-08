@@ -3,20 +3,46 @@
 #include "color.hpp"
 #include "ray.hpp"
 #include "sphere.hpp"
+#include "hittalbe.hpp"
 
-color ray_color(ray the_ray){
-    vec dir1 = the_ray.get_dir();
-    vec direction = unit_vect(dir1);
-    double t = 0.5*(direction.gety()+ 1.0);
-    color the_color = (1.0-t)*color(1.0,1.0,1.0)+t*color(0.5,0.0,0.0);
-    return the_color;
-}
+color BG_color(1.0,1.0,1.0);  // Color of the background
 
-int is_hit(ray the_ray, sphere the_sphere){     // the_ray = a+t*b
+
+double is_hit(ray the_ray, sphere the_sphere){     // the_ray = a+t*b
     vec b = the_ray.get_dir();                  
     Point a = the_ray.get_origine();
+    Point c = the_sphere.get_center();
     double a_1 = dot(b,b);
-    double b_1 = 2*dot(b, a - the_sphere.get_center());
+    double b_1 = 2*dot(b, a - c);
+    double c_1 = dot(a-c, a-c) - the_sphere.get_rayon()*the_sphere.get_rayon();
+    double delta = b_1*b_1 - 4*a_1*c_1;
+
+    //return(delta >=0);
+    if(delta>=0){
+        return((-b_1-sqrt(delta))/2*a_1); 
+    }
+    else{
+        return(-1);
+    }
+}
+
+color ray_color(ray the_ray, sphere the_sphere){
+    auto t_hit = is_hit(the_ray, the_sphere);
+
+    //vec dir1 = the_ray.get_dir();
+    //vec direction = unit_vect(dir1);
+    //double t = 0.5*(direction.gety()+ 1.0);
+    color the_color;// = (1.0-t)*color(1.0,1.0,1.0)+t*color(0.5,0.0,0.0);
+
+    if(t_hit >=0.0){
+        vec N = unit_vect(the_ray.at(t_hit) - vec(0.0,0.0,-1.0));
+        the_color = 0.6*color(N.getx()+1, N.gety()+1, N.getz()+1);
+        }
+        else{
+            the_color = BG_color;
+        }
+
+    return the_color;
 }
 
 // Creation d'une image au format PPM, exemple
@@ -42,8 +68,8 @@ int main(){
     for(int j = height-1; j>=0; j--){
 
         // Ajout d'une sphère
-        double rayon = 100;
-        Point center_sphere(0.0,0.0,-2.0);
+        double rayon = 4;
+        Point center_sphere(0.0,0.0,-10.0);
         color the_sphere_color(8.0,0.0,0.0);
         sphere the_sphere(center_sphere,rayon, the_sphere_color);
 
@@ -54,7 +80,8 @@ int main(){
             auto v = double(j) / (height-1);
             vec direction = lower_left_corner + u*hor+v*vert - origin;
             ray r(origin, direction);
-            color the_color = ray_color(r);
+            color the_color;// = ray_color(r);
+            the_color = ray_color(r, the_sphere);
             write_color(std::cout,the_color);
         }
     }
