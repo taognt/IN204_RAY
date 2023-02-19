@@ -4,6 +4,7 @@
 #include "vector.hpp"
 #include "hittalbe.hpp"
 #include "ray.hpp"
+#include "list_hittable.hpp"
 
 class sphere : public hittable{
     private:
@@ -19,10 +20,10 @@ class sphere : public hittable{
         Point get_center(){return center;}
         double get_rayon(){return r;}
 
-        virtual bool hit(ray r, double t_min, double t_max, data_hit& data) const override;
+        virtual bool hit(ray& r, double t_min, double t_max, data_hit& data) const override;
 };
 
-bool sphere::hit(ray the_ray, double t_min, double t_max, data_hit& data) const{
+bool sphere::hit(ray& the_ray, double t_min, double t_max, data_hit& data) const{
     Point orig = the_ray.get_origine();
     vec dir = the_ray.get_dir();
 
@@ -46,7 +47,7 @@ bool sphere::hit(ray the_ray, double t_min, double t_max, data_hit& data) const{
     data.t = root;
     data.point_hit = the_ray.at(data.t);
     vec out_normal = (data.point_hit - center)/r;
-    data.set_normal(the_ray, out_normal);   
+    data.set_normal(the_ray, out_normal); 
 
     return true;
 
