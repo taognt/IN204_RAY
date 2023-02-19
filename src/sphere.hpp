@@ -46,7 +46,7 @@ bool sphere::hit(ray the_ray, double t_min, double t_max, data_hit& data) const{
     data.t = root;
     data.point_hit = the_ray.at(data.t);
     vec out_normal = (data.point_hit - center)/r;
-    data.set_normal(the_ray, out_normal);
+    data.set_normal(the_ray, out_normal);   
 
     return true;
 

@@ -5,7 +5,7 @@
 #include "sphere.hpp"
 #include "hittalbe.hpp"
 
-color BG_color(1.0,1.0,1.0);  // Color of the background
+color BG_color(0.2,0.4,0.8);  // Color of the background
 
 
 double is_hit(ray the_ray, sphere the_sphere){     // the_ray = a+t*b
@@ -45,6 +45,17 @@ color ray_color(ray the_ray, sphere the_sphere){
     return the_color;
 }
 
+// Function to draw the picture, change "the_sphere" to a list of hittable
+void draw_picture(int i,int j,const int width,const int height, auto hor, auto vert, vec lower_left_corner,vec origin,sphere the_sphere){
+    auto u = double(i) / (width-1);
+    auto v = double(j) / (height-1);
+    vec direction = lower_left_corner + u*hor+v*vert - origin;
+    ray r(origin, direction);
+    color the_color;// = ray_color(r);
+    the_color = ray_color(r, the_sphere);
+    write_color(std::cout,the_color);
+}
+
 // Creation d'une image au format PPM, exemple
 int main(){
     const auto ratio = 16.0/9.0;
@@ -75,14 +86,11 @@ int main(){
 
         // Progressindicatorto the error output
         //std::cerr<<"\n Lines remaining: "<<j<<' '<<std::flush;
+
+
+        // Parralelisons le parcours en longueur : (a faire plus tard)
         for(int i= 0; i<width; i++){
-            auto u = double(i) / (width-1);
-            auto v = double(j) / (height-1);
-            vec direction = lower_left_corner + u*hor+v*vert - origin;
-            ray r(origin, direction);
-            color the_color;// = ray_color(r);
-            the_color = ray_color(r, the_sphere);
-            write_color(std::cout,the_color);
+            draw_picture(i,j,width, height,hor,vert, lower_left_corner,origin,the_sphere);
         }
     }
     std::cerr<<"\nDone.\n";

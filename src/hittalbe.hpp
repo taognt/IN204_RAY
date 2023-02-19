@@ -3,6 +3,12 @@
 
 #include "vector.hpp"
 #include "ray.hpp"
+#include <memory>
+#include <vector>
+#include <stdio.h>
+
+using std::shared_ptr;
+using std::make_shared;
 
 //We store the data of hit points
 struct data_hit{
@@ -18,8 +24,9 @@ struct data_hit{
 };
 
 class hittable{
-    public:
+    public:   
         virtual bool hit(ray r, double t_min, double t_max, data_hit& data) const = 0 ;
+
 };
 
 
