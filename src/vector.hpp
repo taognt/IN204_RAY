@@ -20,6 +20,11 @@ class vec{
     double gety() const {return y;};
     double getz() const {return z;};
 
+    // show the vector :
+    void show(){
+        std::cerr<<"("<<x<<", "<<y<<", "<<z<<")"<<std::endl;
+    }
+
 
     // operators
 

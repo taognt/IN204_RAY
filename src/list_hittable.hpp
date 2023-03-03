@@ -30,18 +30,18 @@ class list_hittable : public hittable {
 // Return true if any object is hit by the ray between t_min and t_max
 bool list_hittable::hit(ray& r, double t_min, double t_max, data_hit& data) const {
     data_hit data_buffer;
-    bool hit_any=false;
     auto closest_t = t_max;
 
-    for(const auto& object : objects){
+    for(int i=0; i<objects.size();++i){
+        auto object = objects[i];
 
-        if(object->hit(r, t_min, closest_t, data_buffer)){
-            hit_any = true;
+        if(object->hit(r, t_min, closest_t, data_buffer)==true){
             closest_t = data_buffer.t;
             data = data_buffer;
+            return true;
         }
     }
-    return hit_any;
+    return false;
 }
 
 
