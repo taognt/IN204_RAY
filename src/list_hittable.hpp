@@ -20,10 +20,13 @@ class list_hittable : public hittable {
             objects.push_back(object);
         }
 
+
         virtual bool hit(ray& r, double t_min, double t_max, data_hit& data) const override;
+        
 
     public:
         std::vector<shared_ptr<hittable>> objects;
+        std::vector<color> colors;
 };
 
 

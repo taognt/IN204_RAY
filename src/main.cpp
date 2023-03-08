@@ -46,12 +46,11 @@ double is_hit(ray the_ray, sphere the_sphere){     // the_ray = a+t*b
     data_hit rec;
     if(Shapes.hit(the_ray, 0, infinity, rec)){
         auto t_hit = rec.t;
+        color the_color = rec.the_color;
         //std::cerr<<"\nt_hit : "<<t_hit<<std::endl; 
-        //vec N = data_buffer.normal_hit;
+        //std::cerr<<"\nnormal hit : "<<rec.normal_hit<<std::endl;
+        return the_color + 0.5*(rec.normal_hit+color(1,1,1));
         return 0.5*(rec.normal_hit+color(1,1,1));
-        //the_color =  0.6*color(N+color(1,1,1));
-        //std::cerr<<"color normal hit : "<<data_buffer.normal_hit<<std::endl;
-        //return 0.6*(N+color(1,1,1));
 
     }
     else{
@@ -116,7 +115,7 @@ int main(){
 
     //List of hittable
     list_hittable Shapes;
-    //Shapes.add(make_shared<sphere> (the_sphere));
+    Shapes.add(make_shared<sphere> (the_sphere));
     Shapes.add(make_shared<sphere> (the_sphere_2));
     std::cerr<<"Nbr objects : "<<Shapes.objects.size()<<std::endl;
 

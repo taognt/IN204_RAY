@@ -16,6 +16,9 @@ struct data_hit{
     vec normal_hit; // Normal to the object in the hit point
     double t;
     bool front_face; //True if the object's face crossed is the front one (the ray comes front the outside of the object)
+    color the_color;
+
+
 
     inline void set_normal(ray& the_ray, const vec& out_normal){ //The normal_hit always points outside the object
         //front_face = dot(the_ray.get_dir(), out_normal)<0;

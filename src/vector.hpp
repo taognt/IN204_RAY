@@ -83,31 +83,14 @@ inline vec operator*(double t, vec v){
 }
 
 inline vec operator*( vec v, double t){
-    return t*v;
+    return vec(t*v.getx(), t*v.gety(), t*v.getz());
 }
 
 inline std::ostream& operator<<(std::ostream &out, vec &v){
-    return out<<v.getx()<<' '<<v.gety()<<' '<<v.getz();
+    return out<<"("<<v.getx()<<' '<<v.gety()<<' '<<v.getz()<<")";
 }
 
 
-// Not sure its necessary -----------------------------------------------------
-/* inline vec operator+( Point &u, vec &v){
-    return vec(u.getx()+v.getx(), u.gety()+v.gety(),u.getz()+v.getz());
-}
-
-inline vec operator+( vec &u, Point &v){
-    return vec(u.getx()+v.getx(), u.gety()+v.gety(),u.getz()+v.getz());
-}
-
-inline vec operator-( Point& u,  vec &v){
-    return vec(u.getx()-v.getx(), u.gety()-v.gety(),u.getz()-v.getz());
-}
-
-inline vec operator-( vec& u,  Point &v){
-    return vec(u.getx()-v.getx(), u.gety()-v.gety(),u.getz()-v.getz());
-}
- */
 
 //----------------------------------------------------------
 
@@ -120,17 +103,7 @@ inline vec operator-(const vec &u, const vec &v){
     return vec(u.getx()-v.getx(), u.gety()-v.gety(),u.getz()-v.getz());
 }
 
-/* inline vec operator*(vec &u, vec &v){
-    return vec(u.getx()*v.getx(), u.gety()*v.gety(), u.getz()*v.getz());
-}
- */
-/* inline vec operator*(double t, vec v){
-    return vec(t*v.getx(), t*v.gety(), t*v.getz());
-} */
 
-/* inline vec operator*(vec v,double t){
-    return t*v;
-} */
 
 inline vec operator/(const vec &u, double t){
     return (1/t)*u;
