@@ -3,6 +3,9 @@
 
 #include <cmath>
 #include <iostream>
+#include <random>
+#include <cstdlib>
+#include <ctime>  
 
 using std::sqrt;
 
@@ -24,7 +27,6 @@ class vec{
     void show(){
         std::cerr<<"("<<x<<", "<<y<<", "<<z<<")"<<std::endl;
     }
-
 
     // operators
 
@@ -127,6 +129,32 @@ inline vec unit_vect(vec v){
 
 typedef vec Point;
 using color = vec; //RGB color
+
+
+
+inline double random_double(){
+    return rand()/(RAND_MAX+1.0);
+}
+
+inline double random_double(double min_,double max_){
+    return min_+(max_-min_)*random_double();
+}
+
+
+//return a vec having its directions randomly chosen between min_ and max_
+inline static vec random(double min_, double max_){
+    return vec(random_double(min_, max_),random_double(min_, max_),random_double(min_, max_));
+};
+
+//return a random unit vec (random between min_ and max_), having scalar product positive with normal_
+vec random_vec_unit(){   
+    while(true){
+        auto vect_ = random(-1, 1); 
+        if(vect_.lenght_squared()>=1) continue;
+        return vect_;
+    }
+};
+
 
 
 #endif 

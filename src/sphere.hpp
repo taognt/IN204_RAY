@@ -5,6 +5,7 @@
 #include "hittalbe.hpp"
 #include "ray.hpp"
 #include "list_hittable.hpp"
+#include "utils.hpp"
 
 class sphere : public hittable{
     private:
@@ -26,7 +27,6 @@ class sphere : public hittable{
 bool sphere::hit(ray& the_ray, double t_min, double t_max, data_hit& data) const{
     bool test_1 = true; // test if root is a root of the equation
     bool test_2 = false; // make sure the hit point is on the sphere
-    double epsilon = 1e-4;
     data_hit data_buffer;
     double result;
 

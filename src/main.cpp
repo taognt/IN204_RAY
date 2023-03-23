@@ -7,6 +7,10 @@
 #include "Plan.hpp"
 #include <iostream>
 #include <chrono>
+#include <fstream>
+
+#include<omp.h>
+
 
 #include "utils.hpp"
 
@@ -33,7 +37,7 @@ double is_hit(ray the_ray, sphere the_sphere){     // the_ray = a+t*b
     }
 }
 
- color ray_color_the_sphere(ray the_ray, sphere the_sphere){
+color ray_color_the_sphere(ray the_ray, sphere the_sphere){
     data_hit rec;
     if(the_sphere.hit(the_ray, 0, infinity, rec) && ((rec.point_hit - the_sphere.get_center()).lenght() < the_sphere.get_rayon()) ){
         return 0.5*(rec.normal_hit+color(1,1,1));
@@ -43,31 +47,61 @@ double is_hit(ray the_ray, sphere the_sphere){     // the_ray = a+t*b
     }
 } 
 
- color ray_color(ray& the_ray, const list_hittable& Shapes){
+// color ray_color(ray& the_ray, const list_hittable& Shapes){
+//     data_hit rec;
+//     if(Shapes.hit(the_ray, 0, infinity, rec)){
+//         auto t_hit = rec.t;
+//         color the_color = rec.the_color;
+//         //std::cerr<<"\nt_hit : "<<t_hit<<std::endl; 
+//         //std::cerr<<"\nnormal hit : "<<rec.normal_hit<<std::endl;
+//         //return the_color + 0.5*(rec.normal_hit+color(1,1,1));
+//         return 0.5*(rec.normal_hit+color(1,1,1));
+
+//     }
+//     else{
+//         return BG_color;
+//     }
+
+// }
+
+
+
+// FONCTION MODIFÉE
+color ray_color(ray& the_ray, const list_hittable& Shapes, int depth){
+
+    if(depth<=0){
+        return color(0.0,0.0,0.0);
+    } 
+
     data_hit rec;
     if(Shapes.hit(the_ray, 0, infinity, rec)){
         auto t_hit = rec.t;
         color the_color = rec.the_color;
-        //std::cerr<<"\nt_hit : "<<t_hit<<std::endl; 
+        Point target = rec.point_hit + rec.normal_hit + random_vec_unit();
+        //vec new_vec target-rec.point_hit;
+       //std::cerr<<"\nt_hit : "<<t_hit<<std::endl; 
         //std::cerr<<"\nnormal hit : "<<rec.normal_hit<<std::endl;
-        return the_color + 0.5*(rec.normal_hit+color(1,1,1));
-        return 0.5*(rec.normal_hit+color(1,1,1));
+        //return the_color + 0.5*(rec.normal_hit+color(1,1,1));
+        //return 0.5*(rec.normal_hit+color(1,1,1));
+        ray ray2(rec.point_hit, target - rec.point_hit);
+        return 0.5*ray_color(ray2, Shapes, depth-1);//+0.1*(rec.normal_hit+color(1,1,1));
+
 
     }
     else{
         return BG_color;
     }
 
-} 
+}
 
 // Function to draw the picture, change "the_sphere" to a list of hittable
-void draw_picture(int i,int j,const int width,const int height, auto hor, auto vert, vec lower_left_corner,vec origin,list_hittable Shapes){
+void draw_picture(int i,int j,const int width,const int height, auto hor, auto vert, vec lower_left_corner,vec origin,list_hittable Shapes, int max_depth){
     auto u = double(i) / (width-1);
     auto v = double(j) / (height-1);
     vec direction = lower_left_corner + u*hor+v*vert;//- origin;
     ray r(origin, direction);
     color the_color;// = ray_color(r);
-    the_color = ray_color(r, Shapes);
+    the_color = ray_color(r, Shapes, max_depth);
     write_color(std::cout,the_color);
 }
 
@@ -83,11 +117,15 @@ void draw_picture_the_sphere(int i,int j,const int width,const int height, auto 
 
 // Creation d'une image au format PPM, exemple
 int main(){
+    //stream definition :
+    std::ofstream myfile;
+    myfile.open("image_test.ppm");
+
+
     const auto ratio = 16.0/9.0;
     const int width = 1920;
     const int height = static_cast<int>(width/ratio);
     std::cerr<<"\nHeight: "<<height<<"\n"<<std::flush;
-
 
     //camera
     auto view_height = 2.0;
@@ -101,7 +139,7 @@ int main(){
     vec lower_left_corner = origin - hor/2 - vert/2 - vec(0, 0, focal);
 
 
-    std::cout<<"P3\n"<<width<<" "<<height<<"\n255\n";
+    myfile<<"P3\n"<<width<<" "<<height<<"\n255\n";
     // Ajout d'une sphère
     double rayon = 4;
     Point center_sphere(0.0,0.0,-15.0);
@@ -115,30 +153,33 @@ int main(){
     sphere the_sphere_2(center_sphere_2, rayon_2,the_sphere_color_2);  
 
     // Ajout d'un plan 
-    vec the_normal(0.0,1.0,0.0);
+    vec the_normal(0.3,0.3,0.3);
     the_normal = unit_vect(the_normal);
-    Point the_origin(0.0,-20.0,-10);
-    plan the_plan(the_normal, the_origin);
+    //Point the_origin(0.0,-20.0,-10);
+    Point the_origin(4.0,0.0,-15.0);
+    color the_plan_color(0.0,2.0,0.0);
+    plan the_plan(the_normal, the_origin, the_plan_color);
 
     //List of hittable
     list_hittable Shapes;
     Shapes.add(make_shared<sphere> (the_sphere));
     Shapes.add(make_shared<sphere> (the_sphere_2));
     Shapes.add(make_shared<plan> (the_plan));
+    
     std::cerr<<"Nbr objects : "<<Shapes.objects.size()<<std::endl;
+
+    int max_depth = 50;
 
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
+
     for(int j = height-1; j>=0; j--){
-
-        
-
-        // Progressindicatorto the error output
-        //std::cerr<<"\n Lines remaining: "<<j<<' '<<std::flush;
-
+        //Progressindicatorto the error output
+       // std::cerr<<"\n Lines remaining: "<<j<<' '<<std::flush;
 
         // Parralelisons le parcours en longueur : (a faire plus tard)
         for(int i= 0; i<width; i++){
+            color pixel_color(0.0,0.0,0.0);
             //draw_picture(i,j,width, height,hor,vert, lower_left_corner,origin,Shapes);
             //draw_picture_the_sphere(i,j,width, height,hor,vert, lower_left_corner,origin,the_sphere);
             auto u = double(i) / (width-1);
@@ -146,9 +187,9 @@ int main(){
             vec direction = lower_left_corner + u*hor+v*vert;//- origin;
             ray r(origin, direction);
             color the_color;// = ray_color(r);
-            the_color = ray_color(r, Shapes);//ray_color_the_sphere(r, the_sphere);
+            the_color = ray_color(r, Shapes, max_depth);//ray_color_the_sphere(r, the_sphere);
             //the_color = ray_color_the_sphere(r, the_sphere);
-            write_color(std::cout,the_color);
+            write_color(myfile,the_color);
 
 
         }
@@ -157,4 +198,7 @@ int main(){
     std::chrono::duration<double> elapsed_seconds = end-start;
     std::cerr << "\nTemps calcul image : " << elapsed_seconds.count() <<" seconds"<< std::endl;
     std::cerr<<"\nDone.\n";
+
+    myfile.close();
+    return EXIT_SUCCESS;
 }
