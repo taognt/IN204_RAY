@@ -87,7 +87,6 @@ bool sphere::hit(ray& the_ray, double t_min, double t_max, data_hit& data) const
         data_buffer.point_hit = the_ray.at(root); //OK
         vec out_normal = (data_buffer.point_hit - center)/r;
         data_buffer.set_normal(the_ray, out_normal); //OK
-        std::cerr<<"normale : "<<data_buffer.normal_hit.lenght_squared()<<std::endl;
         data = data_buffer;
 
         // cesdeux valeurs doivent être égales :

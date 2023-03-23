@@ -4,6 +4,7 @@
 #include "sphere.hpp"
 #include "hittalbe.hpp"
 #include "list_hittable.hpp"
+#include "Plan.hpp"
 #include <iostream>
 #include <chrono>
 
@@ -113,10 +114,17 @@ int main(){
     color the_sphere_color_2(3.0,2.0,0.0);
     sphere the_sphere_2(center_sphere_2, rayon_2,the_sphere_color_2);  
 
+    // Ajout d'un plan 
+    vec the_normal(0.0,1.0,0.0);
+    the_normal = unit_vect(the_normal);
+    Point the_origin(0.0,-20.0,-10);
+    plan the_plan(the_normal, the_origin);
+
     //List of hittable
     list_hittable Shapes;
     Shapes.add(make_shared<sphere> (the_sphere));
     Shapes.add(make_shared<sphere> (the_sphere_2));
+    Shapes.add(make_shared<plan> (the_plan));
     std::cerr<<"Nbr objects : "<<Shapes.objects.size()<<std::endl;
 
     std::chrono::time_point<std::chrono::system_clock> start, end;
