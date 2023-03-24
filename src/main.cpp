@@ -119,7 +119,7 @@ void draw_picture_the_sphere(int i,int j,const int width,const int height, auto 
 int main(){
     //stream definition :
     std::ofstream myfile;
-    myfile.open("image_test.ppm");
+    myfile.open("image_720.ppm");
 
 
     const auto ratio = 16.0/9.0;

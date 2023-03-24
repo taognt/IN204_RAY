@@ -34,6 +34,7 @@ class list_hittable : public hittable {
 bool list_hittable::hit(ray& r, double t_min, double t_max, data_hit& data) const {
     data_hit data_buffer;
     auto closest_t = t_max;
+    bool hit_any = false;
 
     for(int i=0; i<objects.size();++i){
         auto object = objects[i];
@@ -41,11 +42,11 @@ bool list_hittable::hit(ray& r, double t_min, double t_max, data_hit& data) cons
             if(data_buffer.t<closest_t){
                 closest_t = data_buffer.t;
                 data = data_buffer;
+                hit_any = true;
             }
-            return true;
         }
     }
-    return false;
+    return hit_any;
 }
 
 
