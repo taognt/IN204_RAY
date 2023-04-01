@@ -12,10 +12,10 @@ class camera{
         auto view_width = ratio*view_height;
         auto focal = 1.0;
 
-        Point origin = Point(0.0,0.0,0.0);
-        auto hor = vec(view_width,0,0);
-        auto vert = vec(0,view_height,0);
-        vec lower_left_corner = origin - hor/2 - vert/2 - vec(0, 0, focal);
+        origin = Point(0.0,0.0,0.0);
+        hor = vec(view_width,0,0);
+        vert = vec(0,view_height,0);
+        lower_left_corner = origin - hor/2 - vert/2 - vec(0, 0, focal);
         }
 
         ray get_ray(double u, double v) const{
