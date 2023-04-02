@@ -61,6 +61,7 @@ color ray_color(ray& the_ray, const list_hittable& Shapes, int depth){
             return BG_color;
         }
     }
+    return BG_color;
 }
 
 
@@ -93,8 +94,14 @@ int main(){
 
     //materials
     //auto material_floor = make_shared<diffuse>(color(0.7,0.6,0.1));
-    color color_1(0.8,0.8,0.4);
-    auto material_sphere_1 = make_shared<metal>(color_1);
+    color color_1(0.7,0.0,0.1);
+    color color_2(0.6,0.6,0.6);
+    color color_3(1,0.7,0.75);
+    color color_4(0.89,0.82,0.45);
+    auto material_sphere_1 = make_shared<diffuse>(color_1);
+    auto material_sphere_2 = make_shared<metal>(color_2);
+    auto material_sphere_3 = make_shared<metal>(color_4);
+    auto material_plan = make_shared<diffuse>(color_3);
 
     // Ajout d'une sphère
     double rayon = 4;
@@ -106,7 +113,7 @@ int main(){
     double rayon_2 = 5;
     Point center_sphere_2(10.0,0.0,-11.0);
     color the_sphere_color_2(3.0,2.0,0.0);
-    sphere the_sphere_2(center_sphere_2, rayon_2,material_sphere_1);  
+    sphere the_sphere_2(center_sphere_2, rayon_2,material_sphere_2);  
 
     // Ajout d'un plan 
     vec the_normal(0.3,0.3,0.3);
@@ -114,18 +121,19 @@ int main(){
     //Point the_origin(0.0,-20.0,-10);
     Point the_origin(4.0,0.0,-15.0);
     color the_plan_color(0.0,2.0,0.0);
-    plan the_plan(the_normal, the_origin, the_plan_color);
+    plan the_plan(the_normal, the_origin, material_plan);
 
     //List of hittable
     list_hittable Shapes;
     Shapes.add(make_shared<sphere> (Point(0.0,0.0,-15.0), 4.0, material_sphere_1));
-    //Shapes.add(make_shared<sphere> (the_sphere_2));
-    //Shapes.add(make_shared<plan> (the_plan));
+    Shapes.add(make_shared<sphere> (Point(10.0,0.0,-11.0), 5.0, material_sphere_2));
+    Shapes.add(make_shared<sphere> (Point(4.0,4.0,-11.0), 3.0, material_sphere_3));
+    Shapes.add(make_shared<plan> (the_plan));
     
     std::cerr<<"Nbr objects : "<<Shapes.objects.size()<<std::endl;
 
-    int max_depth = 5;
-    int number_of_sample = 10;
+    int max_depth = 10;
+    int number_of_sample = 25;
 
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();

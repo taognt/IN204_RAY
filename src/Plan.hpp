@@ -10,16 +10,14 @@ class plan : public hittable{
     private:
         vec normal; 
         Point origin;
-        color the_color;
+        shared_ptr<material> the_material; //Color is inside
 
     public:
         plan(){}
-        plan(vec norm, Point origin_, color _color):normal(norm),origin(origin_), the_color(_color){}
-        plan(vec norm, Point origin_):normal(norm), origin(origin_){}
+        plan(vec norm, Point origin_, shared_ptr<material> mat):normal(norm),origin(origin_), the_material(mat){}
         
         Point get_origin(){return origin;}
         vec get_normal(){return normal;}
-        color get_color(){return the_color;}
 
         virtual bool hit(ray& r, double t_min, double t_max, data_hit& data) const override;
 };
@@ -28,8 +26,6 @@ bool plan::hit(ray& the_ray, double t_min, double t_max, data_hit& data) const{
     data_hit data_buffer;
     double t;
 
-    //Set the color:
-    data_buffer.the_color = the_color;
 
     //ray
     vec dir = the_ray.get_dir();                  
@@ -64,6 +60,7 @@ bool plan::hit(ray& the_ray, double t_min, double t_max, data_hit& data) const{
     }
 
     data_buffer.t = t;
+    data_buffer.mat_ptr = the_material;
     data_buffer.point_hit = the_ray.at(t);
     data_buffer.normal_hit = normal;
     data_buffer.front_face = true;
