@@ -17,8 +17,7 @@ class material {
 class metal : public material {
     public:
         metal(color a) : a_color(a) {}
-
-        virtual bool scatter(const ray& r_in, data_hit& data, color& attenuation, ray& scattered) const override ;
+        virtual bool scatter(const ray& r_in, data_hit& data, color& attenuation, ray& scattered) const  ;
 
     public:
         color a_color;
