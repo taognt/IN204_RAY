@@ -14,20 +14,22 @@ class material {
         virtual bool scatter(ray ray_in, data_hit& the_data_hit, color& attenuation, ray& ray_out) const = 0;
 };
 
-// class metal : public material {
-//     public:
-//         metal(color a) : a_color(a) {}
+class metal : public material {
+    public:
+        metal(color a) : a_color(a) {}
 
-//         virtual bool scatter(const ray& r_in, data_hit& data, color& attenuation, ray& scattered) const  {
-//             vec reflected = reflection(unit_vect(r_in.get_dir()), data.normal_hit);
-//             scattered = ray(data.point_hit, reflected);
-//             attenuation = a_color;
-//             return (dot(scattered.get_dir(), data.normal_hit)>0);
-//         }
+        virtual bool scatter(const ray& r_in, data_hit& data, color& attenuation, ray& scattered) const override ;
 
-//     public:
-//         color a_color;
-// };
+    public:
+        color a_color;
+};
+
+bool metal::scatter(const ray& r_in, data_hit& data, color& attenuation, ray& scattered) const{
+    vec reflected = reflection(unit_vect(r_in.get_dir()), data.normal_hit);
+    scattered = ray(data.point_hit, reflected);
+    attenuation = a_color;
+    return (dot(scattered.get_dir(), data.normal_hit)>0);
+}
 
 // class diffuse : public material{
 //     public:
