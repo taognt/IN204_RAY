@@ -9,8 +9,9 @@
 #include <iostream>
 #include <chrono>
 #include <fstream>
-
+#include "material.hpp"
 #include<omp.h>
+#include "metal.hpp"
 
 
 #include "utils.hpp"
@@ -38,32 +39,6 @@ double is_hit(ray the_ray, sphere the_sphere){     // the_ray = a+t*b
     }
 }
 
-// color ray_color_the_sphere(ray the_ray, sphere the_sphere){
-//     data_hit rec;
-//     if(the_sphere.hit(the_ray, 0, infinity, rec) && ((rec.point_hit - the_sphere.get_center()).lenght() < the_sphere.get_rayon()) ){
-//         return 0.5*(rec.normal_hit+color(1,1,1));
-//     }
-//     else{
-//         return BG_color;
-//     }
-// } 
-
-// color ray_color(ray& the_ray, const list_hittable& Shapes){
-//     data_hit rec;
-//     if(Shapes.hit(the_ray, 0, infinity, rec)){
-//         auto t_hit = rec.t;
-//         color the_color = rec.the_color;
-//         //std::cerr<<"\nt_hit : "<<t_hit<<std::endl; 
-//         //std::cerr<<"\nnormal hit : "<<rec.normal_hit<<std::endl;
-//         //return the_color + 0.5*(rec.normal_hit+color(1,1,1));
-//         return 0.5*(rec.normal_hit+color(1,1,1));
-
-//     }
-//     else{
-//         return BG_color;
-//     }
-
-// }
 
 
 
@@ -76,51 +51,24 @@ color ray_color(ray& the_ray, const list_hittable& Shapes, int depth){
 
     data_hit rec;
     if(Shapes.hit(the_ray, 0.001, infinity, rec)){
-        auto t_hit = rec.t;
-        color the_color = rec.the_color;
-        Point target = rec.point_hit + rec.normal_hit + random_vec_unit();
-        //vec new_vec target-rec.point_hit;
-       //std::cerr<<"\nt_hit : "<<t_hit<<std::endl; 
-        //std::cerr<<"\nnormal hit : "<<rec.normal_hit<<std::endl;
-        //return the_color + 0.5*(rec.normal_hit+color(1,1,1));
-        //return 0.5*(rec.normal_hit+color(1,1,1));
-        ray ray2(rec.point_hit, target - rec.point_hit);
-        return 0.5*ray_color(ray2, Shapes, depth-1)+0.2*(rec.normal_hit+color(1,0.3,0.7));
+        ray scattered;
+        color attenuation;
+        if(rec.mat_ptr->scatter(the_ray, rec, attenuation, scattered)){
+            return attenuation*ray_color(scattered, Shapes, depth-1);
+        }
 
-
+        else{
+            return BG_color;
+        }
     }
-    else{
-        return BG_color;
-    }
-
 }
 
-// Function to draw the picture, change "the_sphere" to a list of hittable
-// void draw_picture(int i,int j,const int width,const int height, auto hor, auto vert, vec lower_left_corner,vec origin,list_hittable Shapes, int max_depth){
-//     auto u = double(i) / (width-1);
-//     auto v = double(j) / (height-1);
-//     vec direction = lower_left_corner + u*hor+v*vert;//- origin;
-//     ray r(origin, direction);
-//     color the_color;// = ray_color(r);
-//     the_color = ray_color(r, Shapes, max_depth);
-//     write_color(std::cout,the_color);
-// }
-
-// void draw_picture_the_sphere(int i,int j,const int width,const int height, auto hor, auto vert, vec lower_left_corner,vec origin,sphere the_sphere){
-//     auto u = double(i) / (width-1);
-//     auto v = double(j) / (height-1);
-//     vec direction = lower_left_corner + u*hor+v*vert - origin;
-//     ray r(origin, direction);
-//     color the_color;// = ray_color(r);
-//     the_color = ray_color_the_sphere(r, the_sphere);
-//     write_color(std::cout,the_color);
-// }
 
 // Creation d'une image au format PPM, exemple
 int main(){
     //stream definition :
     std::ofstream myfile;
-    myfile.open("image_720.ppm");
+    myfile.open("../images/image_720_2.ppm");
 
 
     const auto ratio = 16.0/9.0;
@@ -142,17 +90,23 @@ int main(){
 
 
     myfile<<"P3\n"<<width<<" "<<height<<"\n255\n";
+
+    //materials
+    //auto material_floor = make_shared<diffuse>(color(0.7,0.6,0.1));
+    color color_1(0.8,0.8,0.4);
+    auto material_sphere_1 = make_shared<metal>(color_1);
+
     // Ajout d'une sphère
     double rayon = 4;
     Point center_sphere(0.0,0.0,-15.0);
     color the_sphere_color(8.0,0.0,0.0);
-    sphere the_sphere(center_sphere, rayon,the_sphere_color);
+    sphere the_sphere(center_sphere, rayon, material_sphere_1);
 
     // Ajout d'une 2e sphère
     double rayon_2 = 5;
     Point center_sphere_2(10.0,0.0,-11.0);
     color the_sphere_color_2(3.0,2.0,0.0);
-    sphere the_sphere_2(center_sphere_2, rayon_2,the_sphere_color_2);  
+    sphere the_sphere_2(center_sphere_2, rayon_2,material_sphere_1);  
 
     // Ajout d'un plan 
     vec the_normal(0.3,0.3,0.3);
@@ -164,14 +118,14 @@ int main(){
 
     //List of hittable
     list_hittable Shapes;
-    Shapes.add(make_shared<sphere> (the_sphere));
-    Shapes.add(make_shared<sphere> (the_sphere_2));
-    Shapes.add(make_shared<plan> (the_plan));
+    Shapes.add(make_shared<sphere> (Point(0.0,0.0,-15.0), 4.0, material_sphere_1));
+    //Shapes.add(make_shared<sphere> (the_sphere_2));
+    //Shapes.add(make_shared<plan> (the_plan));
     
     std::cerr<<"Nbr objects : "<<Shapes.objects.size()<<std::endl;
 
-    int max_depth = 50;
-    int number_of_sample = 50;
+    int max_depth = 5;
+    int number_of_sample = 10;
 
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();

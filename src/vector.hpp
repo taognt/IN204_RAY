@@ -77,6 +77,10 @@ class vec{
         return sqrt(lenght_squared());
     }
 
+    bool near_null() const{
+        auto epsilon = 1e-5;
+        return (fabs(x)<epsilon) && (fabs(y)<epsilon) && (fabs(z)<epsilon);
+    }
 
 };
 
@@ -111,6 +115,9 @@ inline vec operator/(const vec &u, double t){
     return (1/t)*u;
 }
 
+inline vec operator*(const vec &u, const vec &v){
+    return vec(u.getx()*v.getx(), u.gety()*v.gety(), u.getz()*v.getz());
+}
 
 inline double dot(const vec &u, const vec &v){
     return u.getx()*v.getx()+u.gety()*v.gety()+u.getz()*v.getz();
@@ -124,6 +131,10 @@ inline vec cross(vec &u, vec &v){
 
 inline vec unit_vect(vec v){
     return v/v.lenght();
+}
+
+vec reflection(vec v, vec n){
+    return v - 2*dot(v,n)*n;
 }
 
 

@@ -11,12 +11,11 @@ class sphere : public hittable{
     private:
         Point center;
         double r; // radius
-        color the_color;
+        shared_ptr<material> the_material; //Color is inside
 
     public:
-        sphere(){}
-        sphere(Point the_point, double the_rayon, color _color):center(the_point), r(the_rayon), the_color(_color){}
-        sphere(Point the_center, double the_rayon):center(the_center), r(the_rayon){}
+        sphere(){};
+        sphere(Point the_center, double the_rayon, shared_ptr<material> mat):center(the_center), r(the_rayon), the_material(mat){};
         
         Point get_center(){return center;}
         double get_rayon(){return r;}
@@ -34,7 +33,7 @@ bool sphere::hit(ray& the_ray, double t_min, double t_max, data_hit& data) const
 
 
     //Set the color:
-    data_buffer.the_color = the_color;
+    //data_buffer.the_color = the_color;
 
     vec dir = the_ray.get_dir();                  
     Point origin = the_ray.get_origine();
@@ -87,6 +86,7 @@ bool sphere::hit(ray& the_ray, double t_min, double t_max, data_hit& data) const
         data_buffer.point_hit = the_ray.at(root); //OK
         vec out_normal = (data_buffer.point_hit - center)/r;
         data_buffer.set_normal(the_ray, out_normal); //OK
+        data_buffer.mat_ptr = the_material;
         data = data_buffer;
 
         // cesdeux valeurs doivent être égales :
@@ -98,12 +98,6 @@ bool sphere::hit(ray& the_ray, double t_min, double t_max, data_hit& data) const
         return true;
     }
 
-
-    
-    
-   
-
-   
 }
 
 #endif
