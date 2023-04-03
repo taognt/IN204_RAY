@@ -5,7 +5,6 @@
 #include "hittalbe.hpp"
 #include "list_hittable.hpp"
 #include "Plan.hpp"
-#include "camera.hpp"
 #include <iostream>
 #include <chrono>
 #include <fstream>
@@ -38,15 +37,15 @@ double is_hit(ray the_ray, sphere the_sphere){     // the_ray = a+t*b
     }
 }
 
-// color ray_color_the_sphere(ray the_ray, sphere the_sphere){
-//     data_hit rec;
-//     if(the_sphere.hit(the_ray, 0, infinity, rec) && ((rec.point_hit - the_sphere.get_center()).lenght() < the_sphere.get_rayon()) ){
-//         return 0.5*(rec.normal_hit+color(1,1,1));
-//     }
-//     else{
-//         return BG_color;
-//     }
-// } 
+color ray_color_the_sphere(ray the_ray, sphere the_sphere){
+    data_hit rec;
+    if(the_sphere.hit(the_ray, 0, infinity, rec) && ((rec.point_hit - the_sphere.get_center()).lenght() < the_sphere.get_rayon()) ){
+        return 0.5*(rec.normal_hit+color(1,1,1));
+    }
+    else{
+        return BG_color;
+    }
+} 
 
 // color ray_color(ray& the_ray, const list_hittable& Shapes){
 //     data_hit rec;
@@ -75,7 +74,7 @@ color ray_color(ray& the_ray, const list_hittable& Shapes, int depth){
     } 
 
     data_hit rec;
-    if(Shapes.hit(the_ray, 0.001, infinity, rec)){
+    if(Shapes.hit(the_ray, 0, infinity, rec)){
         auto t_hit = rec.t;
         color the_color = rec.the_color;
         Point target = rec.point_hit + rec.normal_hit + random_vec_unit();
@@ -85,7 +84,7 @@ color ray_color(ray& the_ray, const list_hittable& Shapes, int depth){
         //return the_color + 0.5*(rec.normal_hit+color(1,1,1));
         //return 0.5*(rec.normal_hit+color(1,1,1));
         ray ray2(rec.point_hit, target - rec.point_hit);
-        return 0.5*ray_color(ray2, Shapes, depth-1)+0.2*(rec.normal_hit+color(1,0.3,0.7));
+        return 0.5*ray_color(ray2, Shapes, depth-1);//+0.1*(rec.normal_hit+color(1,1,1));
 
 
     }
@@ -96,25 +95,25 @@ color ray_color(ray& the_ray, const list_hittable& Shapes, int depth){
 }
 
 // Function to draw the picture, change "the_sphere" to a list of hittable
-// void draw_picture(int i,int j,const int width,const int height, auto hor, auto vert, vec lower_left_corner,vec origin,list_hittable Shapes, int max_depth){
-//     auto u = double(i) / (width-1);
-//     auto v = double(j) / (height-1);
-//     vec direction = lower_left_corner + u*hor+v*vert;//- origin;
-//     ray r(origin, direction);
-//     color the_color;// = ray_color(r);
-//     the_color = ray_color(r, Shapes, max_depth);
-//     write_color(std::cout,the_color);
-// }
+void draw_picture(int i,int j,const int width,const int height, auto hor, auto vert, vec lower_left_corner,vec origin,list_hittable Shapes, int max_depth){
+    auto u = double(i) / (width-1);
+    auto v = double(j) / (height-1);
+    vec direction = lower_left_corner + u*hor+v*vert;//- origin;
+    ray r(origin, direction);
+    color the_color;// = ray_color(r);
+    the_color = ray_color(r, Shapes, max_depth);
+    write_color(std::cout,the_color);
+}
 
-// void draw_picture_the_sphere(int i,int j,const int width,const int height, auto hor, auto vert, vec lower_left_corner,vec origin,sphere the_sphere){
-//     auto u = double(i) / (width-1);
-//     auto v = double(j) / (height-1);
-//     vec direction = lower_left_corner + u*hor+v*vert - origin;
-//     ray r(origin, direction);
-//     color the_color;// = ray_color(r);
-//     the_color = ray_color_the_sphere(r, the_sphere);
-//     write_color(std::cout,the_color);
-// }
+void draw_picture_the_sphere(int i,int j,const int width,const int height, auto hor, auto vert, vec lower_left_corner,vec origin,sphere the_sphere){
+    auto u = double(i) / (width-1);
+    auto v = double(j) / (height-1);
+    vec direction = lower_left_corner + u*hor+v*vert - origin;
+    ray r(origin, direction);
+    color the_color;// = ray_color(r);
+    the_color = ray_color_the_sphere(r, the_sphere);
+    write_color(std::cout,the_color);
+}
 
 // Creation d'une image au format PPM, exemple
 int main(){
@@ -129,7 +128,6 @@ int main(){
     std::cerr<<"\nHeight: "<<height<<"\n"<<std::flush;
 
     //camera
-    camera the_camera;
     auto view_height = 2.0;
     auto view_width = ratio*view_height;
     std::cerr<<"\nView_width : "<<view_width<<"\n"<<std::flush;
@@ -171,7 +169,6 @@ int main(){
     std::cerr<<"Nbr objects : "<<Shapes.objects.size()<<std::endl;
 
     int max_depth = 50;
-    int number_of_sample = 50;
 
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
@@ -183,15 +180,16 @@ int main(){
         // Parralelisons le parcours en longueur : (a faire plus tard)
         for(int i= 0; i<width; i++){
             color pixel_color(0.0,0.0,0.0);
-            //#pragma omp parallel for
-            for(int k=0; k<number_of_sample; ++k){
-                auto u = double(i+random_double()) / (width-1);
-                auto v = double(j+random_double()) / (height-1);
-                ray r = the_camera.get_ray(u,v);
-                pixel_color = pixel_color + ray_color(r, Shapes, max_depth);
-            }
-            
-            write_color(myfile,pixel_color, number_of_sample);
+            //draw_picture(i,j,width, height,hor,vert, lower_left_corner,origin,Shapes);
+            //draw_picture_the_sphere(i,j,width, height,hor,vert, lower_left_corner,origin,the_sphere);
+            auto u = double(i) / (width-1);
+            auto v = double(j) / (height-1);
+            vec direction = lower_left_corner + u*hor+v*vert;//- origin;
+            ray r(origin, direction);
+            color the_color;// = ray_color(r);
+            the_color = ray_color(r, Shapes, max_depth);//ray_color_the_sphere(r, the_sphere);
+            //the_color = ray_color_the_sphere(r, the_sphere);
+            write_color(myfile,the_color);
 
 
         }

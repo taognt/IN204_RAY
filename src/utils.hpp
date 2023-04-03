@@ -21,8 +21,8 @@ const double infinity = std::numeric_limits<double>::infinity();
 const double epsilon = 1e-4;
 
 // Functions
-double deg_to_rad(double deg);
-
-
+double deg_to_rad(double deg){
+    return deg*pi/180.0;
+}
 
 #endif
