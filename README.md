@@ -9,8 +9,9 @@ Nous fournissons entre autres une bibliothèques d'objets permettant de décrire
 Pour générer l'exécutable, taper la commande "make all" dans la racine du dossier.
 
 ### Génération de l'image et Output
-Pour générer l'image, taper la commande "./image_json.exe scene.json"
-Les images sont générées dans la racine du dossier.
+Pour générer l'image, taper la commande ". lire_image"
+Les images sont générées dans le dossier "outputs" au format jpg.
+Les formats ppm sont des formats intermédiaires supprimés après être convertis en jpg.
 ---
 ### Description d'une scène :
 Une scène est décrite à l'aide d'un fichier json "scene.json" directement à la racine du dossier.

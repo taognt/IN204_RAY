@@ -1,0 +1,5 @@
+./image_json.exe scene.json
+find . -maxdepth 1 -name "*.ppm" -type f -print -quit | while read file; do
+    name=$(basename "$file" .ppm)
+    convert "$file" "$name.jpg" && mv "$name.jpg" ./outputs/ && rm "$file"
+done
