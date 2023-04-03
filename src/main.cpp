@@ -202,7 +202,7 @@ int main(int argc, char *argv[]){
 
     //Init of PPM file
     std::ofstream myfile;
-    std::string buffer = "../outputs/image_of_"+std::to_string(width)+"_"+std::to_string(Shapes.objects.size())+"_obj_.ppm";
+    std::string buffer = "image_of_"+std::to_string(width)+"_"+std::to_string(Shapes.objects.size())+"_obj_.ppm";
 
     myfile.open(buffer);
     myfile<<"P3\n"<<width<<" "<<height<<"\n255\n";
