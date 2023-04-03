@@ -12,6 +12,7 @@ using std::make_shared;
 
 class list_hittable : public hittable {
     public:
+        //List of hittable objects
         list_hittable(){}
         list_hittable(shared_ptr<hittable> object){add(object);}
 
@@ -19,7 +20,6 @@ class list_hittable : public hittable {
         void add(shared_ptr<hittable> object){
             objects.push_back(object);
         }
-
 
         virtual bool hit(ray& r, double t_min, double t_max, data_hit& data) const override;
         

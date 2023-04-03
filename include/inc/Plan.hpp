@@ -10,11 +10,11 @@ class plan : public hittable{
     private:
         vec normal; 
         Point origin;
-        shared_ptr<material> the_material; //Color is inside
+        shared_ptr<material> the_material;
 
     public:
         plan(){}
-        plan(vec norm, Point origin_, shared_ptr<material> mat):normal(norm),origin(origin_), the_material(mat){}
+        plan(vec norm, Point origin_, shared_ptr<material> mat) : normal(norm), origin(origin_), the_material(mat){}
         
         Point get_origin(){return origin;}
         vec get_normal(){return normal;}
@@ -25,7 +25,6 @@ class plan : public hittable{
 bool plan::hit(ray& the_ray, double t_min, double t_max, data_hit& data) const{
     data_hit data_buffer;
     double t;
-
 
     //ray
     vec dir = the_ray.get_dir();                  
@@ -43,11 +42,13 @@ bool plan::hit(ray& the_ray, double t_min, double t_max, data_hit& data) const{
     double oy =  origin.gety();
     double oz =  origin.getz();
 
+    //Plan Equation
     auto diff_or = a*(origin_ray.getx()-ox)+b*(origin_ray.gety()-oy)+c*(origin_ray.getz()-oz);
     auto prod = a*x+b*y+c*z;
 
     if(prod!=0){
         t = -diff_or/prod;
+        //hit time is too low or too high
         if(t<t_min || t_max <t){
             return false;
         }

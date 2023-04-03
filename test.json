@@ -1,6 +1,6 @@
 {
     "image": {
-        "width": 1920,
+        "width": 720,
         "max_depth": 50,
         "aspect_ratio": [16.0, 9,0],
         "number_of_sample": 30
@@ -34,9 +34,9 @@
             ],
             "radius": 4,
             "color":[
-                0.7,
+                0.8,
                 0.24,
-                0.0
+                0.4
             ],
             "material":"diffuse"
         },
@@ -58,48 +58,19 @@
         {
             "object_type": "sphere",
             "center": [
-                -5.0,
-                5.0,
-                -8.0
-            ],
-            "radius": 3,
-            "color":[
-                0.7,
-                0.6,
-                0.4
-            ],
-            "material":"diffuse"
-        },
-        {
-            "object_type": "sphere",
-            "center": [
                 10.0,
                 3.0,
                 -11.0
             ],
             "radius": 5.0,
             "color":[
-                0.9,
+                0.45,
                 0.8,
                 0.45
             ],
             "material":"metal"
         },
-        {
-            "object_type": "sphere",
-            "center": [
-                -10.0,
-                -1.0,
-                -16.0
-            ],
-            "radius": 5.0,
-            "color":[
-                0.45,
-                0.45,
-                0.45
-            ],
-            "material":"metal"
-        },
+
         {
             "object_type": "plane",
             "origin": [
@@ -113,9 +84,9 @@
                 0
             ],
             "color":[
-                1.0,
                 0.7,
-                0.75
+                0.4,
+                0.3
             ],
             "material":"diffuse"
         }

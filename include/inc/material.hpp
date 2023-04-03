@@ -11,6 +11,7 @@ struct data_hit;
 
 class material {
     public:
+        //ray_out est le rayon issu de la diffusin ou de la refraction de ray_in
         virtual bool scatter(const ray ray_in, data_hit& the_data_hit, color& attenuation, ray& ray_out) const = 0;
 };
 
@@ -42,8 +43,9 @@ class diffuse : public material{
 };
 
 bool diffuse::scatter(const ray ray_in, data_hit& the_data_hit, color& attenuation, ray& ray_out) const{
-        auto scatter_direction = the_data_hit.normal_hit +random_vec_unit();
+        auto scatter_direction = the_data_hit.normal_hit + random_vec_unit();
 
+        //Si la direction est nulle, nous avons des anomalies
         if(scatter_direction.near_null()){
             scatter_direction = the_data_hit.normal_hit;
         }

@@ -10,7 +10,6 @@ class ray{
 
     public:
     ray(){}
-    //explicit ray(Point a, vec b):origine(a), dir(b) {}     //?? Ambigue, Point et Dir sont tout deux des vec
     ray(const Point& a, const vec& b): origine(a), dir(b){}
 
 

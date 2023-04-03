@@ -11,12 +11,11 @@ class sphere : public hittable{
     private:
         Point center;
         double r; // radius
-        color the_color;
+        shared_ptr<material> the_material; 
 
     public:
-        sphere(){}
-        sphere(Point the_point, double the_rayon, color _color):center(the_point), r(the_rayon), the_color(_color){}
-        sphere(Point the_center, double the_rayon):center(the_center), r(the_rayon){}
+        sphere(){};
+        sphere(Point the_center, double the_rayon, shared_ptr<material> mat):center(the_center), r(the_rayon), the_material(mat){};
         
         Point get_center(){return center;}
         double get_rayon(){return r;}
@@ -30,15 +29,9 @@ bool sphere::hit(ray& the_ray, double t_min, double t_max, data_hit& data) const
     data_hit data_buffer;
     double result;
 
-    //temporary
-
-
-    //Set the color:
-    data_buffer.the_color = the_color;
-
     vec dir = the_ray.get_dir();                  
     Point origin = the_ray.get_origine();
-    vec or_cent = origin-center; // direction - center
+    vec or_cent = origin-center;
 
     //P(t) = dir*t + origin
     double a = dot(dir,dir);
@@ -46,25 +39,15 @@ bool sphere::hit(ray& the_ray, double t_min, double t_max, data_hit& data) const
     double c = dot(or_cent, or_cent) - r*r;
     double delta = b*b - 4*a*c;
     
-
-
-    /* data.t = root;
-    data.point_hit = the_ray.at(data.t);
-    vec out_normal = (data.point_hit - center)/r;
-    data.set_normal(the_ray, out_normal);  */
-
-    
     if(delta<epsilon){
         return false;
         std::cerr<<"delta < 0"<<std::endl;
     }
-
     else{
 
         //find the nearest root
         auto root = (-b-sqrt(delta))/(2*a);
-        
-        //std::cerr<<"delta : "<<delta<<"\nroot : "<<root<<"\nt_max : "<<t_max<<std::endl;
+
         if(root<t_min || t_max <root){
             root = (-b+sqrt(delta))/(2*a);
             if(root<t_min || t_max <root){
@@ -84,12 +67,13 @@ bool sphere::hit(ray& the_ray, double t_min, double t_max, data_hit& data) const
         }
 
         data_buffer.t = root;
-        data_buffer.point_hit = the_ray.at(root); //OK
+        data_buffer.point_hit = the_ray.at(root);
         vec out_normal = (data_buffer.point_hit - center)/r;
-        data_buffer.set_normal(the_ray, out_normal); //OK
+        data_buffer.set_normal(the_ray, out_normal);
+        data_buffer.mat_ptr = the_material;
         data = data_buffer;
 
-        // cesdeux valeurs doivent être égales :
+        // ces deux valeurs doivent être égales :
         if(test_2){
             std::cerr<<"rayon sphere : "<<r<<std::endl;
             std::cerr<<"distance P(t) - centre : ";
@@ -97,13 +81,7 @@ bool sphere::hit(ray& the_ray, double t_min, double t_max, data_hit& data) const
         }
         return true;
     }
-
-
-    
-    
-   
-
-   
+    return false;
 }
 
 #endif

@@ -19,7 +19,7 @@ class camera{
         lower_left_corner = origin - hor/2 - vert/2 - vec(0, 0, focal);
         }
 
-        camera(float ratio_1, float ratio_2, float view_height, float focal){ //default origin at 0 0 0
+        camera(float ratio_1, float ratio_2, float view_height, float focal){
         auto ratio = ratio_1/ratio_2;
         auto view_width = ratio*view_height;
 
@@ -37,7 +37,7 @@ class camera{
         lower_left_corner = origin - hor/2 - vert/2 - vec(0, 0, focal);
         }
 
-
+        //Return the current ray
         ray get_ray(double u, double v) const{
             ray r(origin, lower_left_corner + u*hor+v*vert);
             return r;
