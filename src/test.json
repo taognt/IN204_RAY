@@ -1,0 +1,78 @@
+{
+    "image": {
+        "width": 480,
+        "max_depth": 50,
+        "aspect_ratio": [16.0, 9,0],
+        "number_of_sample": 30
+    },
+    "camera": {
+        "origin": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "look_at": [
+            277.5,
+            277.5,
+            0.0
+        ],
+        "up_vector": [
+            0.0,
+            1.0,
+            0.0
+        ],
+        "height" : 3.0,
+        "focal" : 1.0
+    },
+    "objects": [
+        {
+            "object_type": "sphere",
+            "center": [
+                0.0,
+                0.0,
+                -15.0
+            ],
+            "radius": 4,
+            "color":[
+                0.2,
+                0.1,
+                0.0
+            ],
+            "material":"diffuse"
+        },
+        {
+            "object_type": "sphere",
+            "center": [
+                10.0,
+                0.0,
+                -11.0
+            ],
+            "radius": 5.0,
+            "color":[
+                0.9,
+                0.8,
+                0.45
+            ],
+            "material":"diffuse"
+        },
+        {
+            "object_type": "plane",
+            "origin": [
+                4.0,
+                0.0,
+                -15.0
+            ],
+            "normal": [
+                0.3,
+                0.3,
+                0.3
+            ],
+            "color":[
+                1.0,
+                0.7,
+                0.75
+            ],
+            "material":"diffuse"
+        }
+    ]
+}

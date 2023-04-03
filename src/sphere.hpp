@@ -57,7 +57,6 @@ bool sphere::hit(ray& the_ray, double t_min, double t_max, data_hit& data) const
         return false;
         std::cerr<<"delta < 0"<<std::endl;
     }
-
     else{
 
         //find the nearest root
@@ -89,7 +88,7 @@ bool sphere::hit(ray& the_ray, double t_min, double t_max, data_hit& data) const
         data_buffer.mat_ptr = the_material;
         data = data_buffer;
 
-        // cesdeux valeurs doivent être égales :
+        // ces deux valeurs doivent être égales :
         if(test_2){
             std::cerr<<"rayon sphere : "<<r<<std::endl;
             std::cerr<<"distance P(t) - centre : ";
@@ -97,7 +96,7 @@ bool sphere::hit(ray& the_ray, double t_min, double t_max, data_hit& data) const
         }
         return true;
     }
-
+    //return false;
 }
 
 #endif

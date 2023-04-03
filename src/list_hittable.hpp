@@ -36,7 +36,7 @@ bool list_hittable::hit(ray& r, double t_min, double t_max, data_hit& data) cons
     auto closest_t = t_max;
     bool hit_any = false;
 
-    for(int i=0; i<(int)objects.size();++i){
+    for(int i=0; i<objects.size();++i){
         auto object = objects[i];
         if(object->hit(r, t_min, closest_t, data_buffer)==true){
             if(data_buffer.t<closest_t){
